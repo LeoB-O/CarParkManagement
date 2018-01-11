@@ -5,6 +5,16 @@ Vehicle::Vehicle()
 
 }
 
+Vehicle::Vehicle(string no, string color, CarType carType, time_t arriveTime, time_t leaveTime, int parkPos)
+{
+    this->no = no;
+    this->color = color;
+    this->carType = carType;
+    this->arriveTime = arriveTime;
+    this->leaveTime = leaveTime;
+    this->parkPos = parkPos;
+}
+
 int Vehicle::getParkPos()
 {
     return this->parkPos;

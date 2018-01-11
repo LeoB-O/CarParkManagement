@@ -13,6 +13,7 @@ class Vehicle
 {
 public:
     Vehicle();
+    Vehicle(string no, string color, CarType carType, time_t arriveTime, time_t leaveTime, int parkPos);
     int getParkPos();
     string getNo();         //获取车牌
     string getColor();      //获取车辆颜色

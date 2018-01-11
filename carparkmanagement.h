@@ -1,6 +1,7 @@
 #ifndef CARPARKMANAGEMENT_H
 #define CARPARKMANAGEMENT_H
 
+#include <ctime>
 #include <QMainWindow>
 #include <QTime>
 #include <QTimer>
@@ -35,6 +36,8 @@ private:
     Employee *employee;
     SearchCar *searchcar;
     Management management;
+    void init();
+    time_t getCurrentTime();
 };
 
 #endif // CARPARKMANAGEMENT_H

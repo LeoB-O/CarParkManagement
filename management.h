@@ -12,8 +12,8 @@ class Management
 {
 public:
     Management();
-    int carEnter(string no, string color, CarType carType, time_t arriveTime, time_t leaveTime, int parkPos); //返回值为实际停车地点
-    int carLeave(string no);    //返回值为停车地点
+    int carEnter(string no, string color, CarType carType, time_t arriveTime, time_t leaveTime, int parkPos); //返回值为在vehicle中的索引
+    int carLeave(string no);    //车辆离开 返回值为在vehicle中的索引
     int findFreePos();          //从头开始查找空闲车位
     int findFreePos(int pos);   //从pos开始查找空闲车位
     int findCar(string no);     //返回值为停车地点
@@ -25,7 +25,7 @@ public:
     int setArriveTime(string no, time_t arriveTime);//修改到达时间
     int setLeaveTime(string no, time_t leaveTime);  //设置离开时间
     int setParkPos(string no, int parkPos);         //设置停车位置
-    void setParkPlaceType(CarType parkPlaceType);   //设置停车位类型
+    void setParkPlaceType(int no, CarType parkPlaceType);   //设置停车位类型
     int findStaff(int no);                          //查找员工
     int setStaffNo(int no, int toNo);               //设置员工工号
     int setStaffName(int no, string name);          //设置员工姓名

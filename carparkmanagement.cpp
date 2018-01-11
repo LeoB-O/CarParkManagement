@@ -6,12 +6,7 @@ CarParkManagement::CarParkManagement(QWidget *parent) :
     ui(new Ui::CarParkManagement)
 {
     ui->setupUi(this);
-    ui->lcdNumber->setDigitCount(9);
-    myTime = new QTime();
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(updateTime()));
-    timer->start(1000);
-    updateVehicleTree();
+    init();
 }
 
 CarParkManagement::~CarParkManagement()
@@ -21,8 +16,13 @@ CarParkManagement::~CarParkManagement()
 
 void CarParkManagement::on_carEnter_clicked()
 {
+    //TODO 更行数据库
     this->carenter = new CarEnter;
     this->carenter->exec();
+    if(this->carenter->result()!=this->carenter->Accepted)
+        return;
+    management.carEnter(carenter->getCarNo(),carenter->getCarColor(),carenter->getCarType(),getCurrentTime(),0,management.findFreePos());
+    updateVehicleTree();
 }
 
 void CarParkManagement::on_employeeManage_clicked()
@@ -46,13 +46,19 @@ void CarParkManagement::updateTime()
 
  void CarParkManagement::updateVehicleTree()
  {
-     //TODO not finished yet
      QStringList carInfoList;
      Vehicle tempVehicle;
      int x = management.getCarAmount();
+     ui->carInfo->topLevelItem(0)->takeChildren();
+     ui->carInfo->topLevelItem(1)->takeChildren();
+     ui->carInfo->topLevelItem(2)->takeChildren();
+     ui->carInfo->topLevelItem(3)->takeChildren();
+     for(int i=0;i<ui->carInfo->topLevelItemCount();++i)
+         ui->carInfo->topLevelItem(i)->takeChildren();;
      for(int i=0;i<management.getCarAmount();++i)
      {
          tempVehicle=management.getVehicleAtIndex(i);
+         carInfoList.clear();
          carInfoList.append(QString::fromStdString(tempVehicle.getNo()));
          carInfoList.append(QString::fromStdString(tempVehicle.getColor()));
          carInfoList.append(QString::fromStdString(tempVehicle.getStrArriveTime()));
@@ -76,4 +82,25 @@ void CarParkManagement::updateTime()
              break;
          }
      }
+     for(int i=0;i<ui->carInfo->topLevelItemCount();++i)
+     {
+         QTreeWidgetItem *temp = new QTreeWidgetItem(QStringList("Double-Click to Add"));
+         ui->carInfo->topLevelItem(i)->insertChild(ui->carInfo->topLevelItem(i)->childCount(),temp);
+     }
+ }
+
+ void CarParkManagement::init()
+ {
+     myTime = new QTime();
+     QTimer *timer = new QTimer(this);
+     connect(timer, SIGNAL(timeout()), this, SLOT(updateTime()));
+     timer->start(1000);
+     updateVehicleTree();
+ }
+
+ time_t CarParkManagement::getCurrentTime()
+ {
+     time_t curTime;
+
+     return time(&curTime);
  }

@@ -79,6 +79,12 @@
         <property name="autoScrollMargin">
          <number>10</number>
         </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectItems</enum>
+        </property>
         <column>
          <property name="text">
           <string>车牌号</string>
@@ -460,6 +466,24 @@
             </property>
             <property name="text">
              <string>车辆查询</string>
+            </property>
+           </widget>
+          </item>
+          <item alignment="Qt::AlignHCenter">
+           <widget class="QPushButton" name="pushButton">
+            <property name="maximumSize">
+             <size>
+              <width>200</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>车辆修改</string>
             </property>
            </widget>
           </item>

@@ -58,6 +58,8 @@ void CarParkManagement::on_retriveCar_clicked()
     int pos=-1;
     this->searchcar = new SearchCar;
     this->searchcar->exec();
+    if(this->searchcar->result()!=this->searchcar->Accepted)
+        return;
     carNo=this->searchcar->getCarNo();
     pos=management.findCar(carNo);
     if(pos==NOT_FOUND)
@@ -192,4 +194,22 @@ void CarParkManagement::on_carInfo_itemDoubleClicked(QTreeWidgetItem *item, int 
     management.carLeave(strCarNo);
     updateVehicleTree();
     updateParkPlaceNum();
+}
+
+void CarParkManagement::on_pushButton_clicked()
+{
+    QString QStrCarNo = ui->carInfo->currentItem()->text(0);
+    string strCarNo = QStrCarNo.toStdString();
+    int pos = management.findCar(strCarNo);
+    if(pos==-1)
+        return;
+    Vehicle tempVehicle = management.getVehicleAtIndex(pos);
+    caredit = new CarEdit;
+    time_t temp = tempVehicle.getArriveTime();
+    caredit->setAll(tempVehicle.getNo(),tempVehicle.getColor(),(long long)(tempVehicle.getArriveTime()));
+    caredit->exec();
+    management.setCarNo(strCarNo, caredit->getCarNo());
+    management.setCarColor(strCarNo, caredit->getCarColor());
+    management.setArriveTime(strCarNo, caredit->getArriveTime());
+    management.updateVehicleDB();
 }

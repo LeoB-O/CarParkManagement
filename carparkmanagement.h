@@ -14,6 +14,7 @@
 #include "searchcar.h"
 #include "management.h"
 #include "carleave.h"
+#include "caredit.h"
 
 namespace Ui {
 class CarParkManagement;
@@ -37,6 +38,8 @@ private slots:
     void updateParkPlaceNum();
     void on_carInfo_itemDoubleClicked(QTreeWidgetItem *item, int column);
 
+    void on_pushButton_clicked();
+
 private:
     Ui::CarParkManagement *ui;
     QTime *myTime;
@@ -44,6 +47,7 @@ private:
     CarLeave *carLeave;
     Employee *employee;
     SearchCar *searchcar;
+    CarEdit *caredit;
     Management management;
     void init();
     time_t getCurrentTime();

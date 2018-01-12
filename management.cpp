@@ -1,5 +1,9 @@
 #include "management.h"
 
+const char* HOST_NAME = "localhost";
+const char* USER_NAME = "root";
+const char* PASSWORD = "";
+
 
 Management::Management()
 {
@@ -41,7 +45,6 @@ int Management::carEnter(string no, string color, CarType carType, time_t arrive
                 break;
             }
         }
-        
         updateVehicleDB();
         return vehicle.size()-1;
     }
@@ -104,7 +107,7 @@ int Management::findCar(string no)
 {
     for(int i=0;i<vehicle.size();i++)
     {
-        if(vehicle[i].getNo()==no)
+        if(vehicle[i].getNo()==no&&vehicle[i].getLeaveTime()==0)
             return i;
     }
     return NOT_FOUND;
@@ -282,7 +285,7 @@ bool Management::loadVehicleDB()
     long int arriveTime, leaveTime, parkPos;
     char buffer[80];
     mysql_init(&sqlCon);
-    mysql_real_connect(&sqlCon, "120.24.228.41", "root", "BslLbbMjl5482()$", "carpark", 3306, NULL, 0);
+    mysql_real_connect(&sqlCon, HOST_NAME, USER_NAME, PASSWORD, "carpark", 3306, NULL, 0);
     mysql_options(&sqlCon, MYSQL_SET_CHARSET_NAME, "utf-8");
     sqlQuery="SELECT * FROM `vehicle`;";
     mysql_real_query(&sqlCon, sqlQuery.c_str(), sqlQuery.length());
@@ -310,11 +313,14 @@ bool Management::updateVehicleDB()
     string sqlQuery;
     char buffer[80];
     mysql_init(&sqlCon);
-    mysql_real_connect(&sqlCon, "120.24.228.41", "root", "BslLbbMjl5482()$", "carpark", 3306, NULL, 0);
-    sqlQuery="DELETE FROM `vehicle`;";
+    mysql_real_connect(&sqlCon, HOST_NAME, USER_NAME, PASSWORD, "carpark", 3306, NULL, 0);
     mysql_real_query(&sqlCon, sqlQuery.c_str(),sqlQuery.length());
     for(int i=0;i<vehicle.size();i++)
     {
+        sqlQuery="DELETE FROM `vehicle` WHERE `number`= '";
+        sqlQuery.append(vehicle[i].getNo());
+        sqlQuery.append("';");
+        mysql_real_query(&sqlCon, sqlQuery.c_str(), sqlQuery.length());
         sqlQuery.clear();
         sqlQuery.append("INSERT INTO `carpark`.`vehicle` (`number`, `color`, `type`, `arriveTime`, `leaveTime`, `parkPos`) VALUES ('");
         sqlQuery.append(vehicle[i].getNo());

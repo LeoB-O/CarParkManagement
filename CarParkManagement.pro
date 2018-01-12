@@ -34,7 +34,8 @@ SOURCES += \
     staff.cpp \
     management.cpp \
     otherfun.cpp \
-    carleave.cpp
+    carleave.cpp \
+    caredit.cpp
 
 HEADERS += \
         carparkmanagement.h \
@@ -46,14 +47,16 @@ HEADERS += \
     staff.h \
     management.h \
     otherfun.h \
-    carleave.h
+    carleave.h \
+    caredit.h
 
 FORMS += \
         carparkmanagement.ui \
     carenter.ui \
     employee.ui \
     searchcar.ui \
-    carleave.ui
+    carleave.ui \
+    caredit.ui
 
 INCLUDEPATH += D:\mysql-5.7.20-win32\include
 

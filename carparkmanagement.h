@@ -15,6 +15,7 @@
 #include "management.h"
 #include "carleave.h"
 #include "caredit.h"
+#include "login.h"
 
 namespace Ui {
 class CarParkManagement;
@@ -27,6 +28,7 @@ class CarParkManagement : public QMainWindow
 public:
     explicit CarParkManagement(QWidget *parent = 0);
     ~CarParkManagement();
+    bool isValid();
 
 private slots:
     void on_carEnter_clicked();
@@ -37,7 +39,6 @@ private slots:
     void updateStayTime();
     void updateParkPlaceNum();
     void on_carInfo_itemDoubleClicked(QTreeWidgetItem *item, int column);
-
     void on_pushButton_clicked();
 
 private:
@@ -48,9 +49,11 @@ private:
     Employee *employee;
     SearchCar *searchcar;
     CarEdit *caredit;
+    Login *login;
     Management management;
     void init();
     time_t getCurrentTime();
+    bool isValidUser;
 };
 
 #endif // CARPARKMANAGEMENT_H

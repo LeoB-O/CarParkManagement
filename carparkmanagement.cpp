@@ -14,6 +14,11 @@ CarParkManagement::~CarParkManagement()
     delete ui;
 }
 
+bool CarParkManagement::isValid()
+{
+    return isValidUser;
+}
+
 void CarParkManagement::on_carEnter_clicked()
 {
     bool inputIsRight=false;
@@ -48,7 +53,7 @@ void CarParkManagement::on_carEnter_clicked()
 
 void CarParkManagement::on_employeeManage_clicked()
 {
-    this->employee = new Employee;
+    this->employee = new Employee(&management);
     this->employee->exec();
 }
 
@@ -162,7 +167,19 @@ void CarParkManagement::updateTime()
 
  void CarParkManagement::init()
  {
+     isValidUser=false;
+     this->login = new Login;
+     login->exec();
      management.loadVehicleDB();
+     management.loadStaffDB();
+     if(management.setCurrentUser(atoi(login->getUserName().c_str()))==-1)
+     {
+         QMessageBox alertMess;
+         alertMess.setText("用户不存在！");
+         alertMess.exec();
+         return;
+     }
+     isValidUser=true;
      myTime = new QTime();
      QTimer *timer = new QTimer(this);
      connect(timer, SIGNAL(timeout()), this, SLOT(updateTime()));
@@ -208,8 +225,18 @@ void CarParkManagement::on_pushButton_clicked()
     time_t temp = tempVehicle.getArriveTime();
     caredit->setAll(tempVehicle.getNo(),tempVehicle.getColor(),(long long)(tempVehicle.getArriveTime()));
     caredit->exec();
+    if(caredit->result()!=caredit->Accepted)
+        return;
+    if(caredit->nameEdited()&&management.findCar(caredit->getCarNo())!=NOT_FOUND)
+    {
+        QMessageBox alertMess;
+        alertMess.setText("车辆已存在！");
+        alertMess.exec();
+        return;
+    }
     management.setCarNo(strCarNo, caredit->getCarNo());
     management.setCarColor(strCarNo, caredit->getCarColor());
     management.setArriveTime(strCarNo, caredit->getArriveTime());
     management.updateVehicleDB();
+    updateVehicleTree();
 }

@@ -6,6 +6,7 @@ CarEdit::CarEdit(QWidget *parent) :
     ui(new Ui::CarEdit)
 {
     ui->setupUi(this);
+    this->edited=false;
 }
 
 CarEdit::~CarEdit()
@@ -23,6 +24,11 @@ void CarEdit::setAll(string carNo, string carColor, long long carEnterTime)
     ui->dateTimeEdit->setDateTime(enterTime);
 }
 
+bool CarEdit::nameEdited()
+{
+    return edited;
+}
+
 string CarEdit::getCarNo()
 {
     return ui->lineEdit->text().toStdString();
@@ -36,4 +42,9 @@ string CarEdit::getCarColor()
 time_t CarEdit::getArriveTime()
 {
     return ui->dateTimeEdit->dateTime().toSecsSinceEpoch();
+}
+
+void CarEdit::on_lineEdit_textChanged(const QString &arg1)
+{
+    this->edited=true;
 }

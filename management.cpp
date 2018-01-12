@@ -1,9 +1,9 @@
 #include "management.h"
+#include "otherdefinition.h"
 
-const char* HOST_NAME = "localhost";
-const char* USER_NAME = "root";
-const char* PASSWORD = "";
-
+//const char* HOST_NAME = "localhost";
+//const char* USER_NAME = "root";
+//const char* PASSWORD = "";
 
 Management::Management()
 {
@@ -123,15 +123,40 @@ Vehicle Management::getVehicleAtIndex(int index)
     return this->vehicle[index];
 }
 
+int Management::setCurrentUser(int no)
+{
+    MYSQL sqlCon;
+    string sqlQuery;
+    mysql_init(&sqlCon);
+    char buffer[40];
+    mysql_real_connect(&sqlCon, HOST_NAME, USER_NAME, PASSWORD, "carpark", 3306, NULL, 0);
+    sqlQuery = "INSERT INTO `carpark`.`worklog` (`id`, `date`, `staffname`) VALUES ('";
+    //3', '2018.1.1', 'tset');"
+    int pos = findStaff(no);
+    if(pos==-1)
+        return -1;
+    sqlQuery.append(itoa(staff[pos].getNo(),buffer,10));
+    sqlQuery.append("','");
+    sqlQuery.append(QDate::currentDate().toString().toStdString());
+    sqlQuery.append("','");
+    sqlQuery.append(staff[pos].getName());
+    sqlQuery.append("');");
+    mysql_real_query(&sqlCon, sqlQuery.c_str(), sqlQuery.length());
+    //INSERT INTO `carpark`.`worklog` (`id`, `date`, `staffname`) VALUES ('4', 'test', 'tset');
+    mysql_close(&sqlCon);
+    return pos;
+}
+
 int Management::setCarNo(string no, string toNo)
 {
     //TODO 判重
     int pos = findCar(no);
     if(pos==-1)
         return NOT_FOUND;
-    pos = findCar(toNo);
-    if(pos==-1)
+    int pos2 = findCar(toNo);
+    if(pos2==-1)
     {
+        deleteVehicleDB(no);
         vehicle[pos].setNo(toNo);
         return pos;
     }
@@ -211,6 +236,45 @@ void Management::setParkPlaceType(int no, CarType parkPlaceType)
     if(no>=parkplace.size()||no<0)
         return;
     parkplace[no].setPlaceType(parkPlaceType);
+}
+
+int Management::addStaff(string no, string name, int age)
+{
+    Staff temp;
+    temp.setNo(atoi(no.c_str()));
+    temp.setName(name);
+    temp.setAge(age);
+    staff.push_back(temp);
+    return staff.size()-1;
+}
+
+int Management::getStaffNum()
+{
+    return this->staff.size();
+}
+
+int Management::getStaffNO(int index)
+{
+    return this->staff[index].getNo();
+}
+
+string Management::getStaffName(int index)
+{
+    return this->staff[index].getName();
+}
+
+int Management::getStaffAge(int index)
+{
+    return this->staff[index].getAge();
+}
+
+int Management::deleteStaff(int no)
+{
+    int pos = findStaff(no);
+    if(pos==-1)
+        return NOT_FOUND;
+    staff.erase(staff.begin()+pos);
+    return pos;
 }
 
 int Management::findStaff(int no)
@@ -314,7 +378,6 @@ bool Management::updateVehicleDB()
     char buffer[80];
     mysql_init(&sqlCon);
     mysql_real_connect(&sqlCon, HOST_NAME, USER_NAME, PASSWORD, "carpark", 3306, NULL, 0);
-    mysql_real_query(&sqlCon, sqlQuery.c_str(),sqlQuery.length());
     for(int i=0;i<vehicle.size();i++)
     {
         sqlQuery="DELETE FROM `vehicle` WHERE `number`= '";
@@ -352,9 +415,67 @@ bool Management::updateVehicleDB(string no, string color, CarType carType, time_
 
 }
 
+bool Management::deleteVehicleDB(string no)
+{
+    MYSQL sqlCon;
+    string sqlQuery;
+    mysql_init(&sqlCon);
+    mysql_real_connect(&sqlCon, HOST_NAME, USER_NAME, PASSWORD, "carpark", 3306, NULL, 0);
+    sqlQuery="DELETE FROM `vehicle` WHERE `number` = '";
+    sqlQuery.append(no);
+    sqlQuery.append("';");
+    mysql_real_query(&sqlCon, sqlQuery.c_str(), sqlQuery.length());
+}
+
+bool Management::loadStaffDB()
+{
+    MYSQL sqlCon;
+    string no, name;
+    int age;
+    string sqlQuery;
+    mysql_init(&sqlCon);
+    mysql_real_connect(&sqlCon, HOST_NAME, USER_NAME, PASSWORD, "carpark", 3306, NULL, 0);
+    mysql_options(&sqlCon, MYSQL_SET_CHARSET_NAME, "utf-8");
+    sqlQuery="SELECT * FROM `staff`;";
+    mysql_real_query(&sqlCon, sqlQuery.c_str(), sqlQuery.length());
+    MYSQL_RES* result = mysql_store_result(&sqlCon);
+    MYSQL_ROW row;
+    unsigned int num_fields;
+    num_fields = mysql_num_fields(result);
+    while(row = mysql_fetch_row(result))
+    {
+        no = row[0];
+        name = row[1];
+        age = atoi(row[2]);
+        addStaff(no, name, age);
+    }
+    mysql_close(&sqlCon);
+    return true;
+}
+
 bool Management::updateStaffDB()
 {
-
+    MYSQL sqlCon;
+    string sqlQuery;
+    char buffer[80];
+    mysql_init(&sqlCon);
+    mysql_real_connect(&sqlCon, HOST_NAME, USER_NAME, PASSWORD, "carpark", 3306, NULL, 0);
+    sqlQuery="DELETE FROM `staff`;";
+    mysql_real_query(&sqlCon, sqlQuery.c_str(), sqlQuery.length());
+    for(int i=0;i<staff.size();i++)
+    {
+        sqlQuery.clear();
+        sqlQuery.append("INSERT INTO `carpark`.`staff` (`NO`, `name`, `age`) VALUES ('");
+        sqlQuery.append(itoa(staff[i].getNo(),buffer,10));
+        sqlQuery.append("', '");
+        sqlQuery.append(staff[i].getName());
+        sqlQuery.append("', '");
+        sqlQuery.append(itoa(staff[i].getAge(),buffer,10));
+        sqlQuery.append("');");
+        mysql_real_query(&sqlCon, sqlQuery.c_str(), sqlQuery.length());
+    }
+    mysql_close(&sqlCon);
+    return true;
 }
 
 bool Management::updateStaffDB(Staff staff)

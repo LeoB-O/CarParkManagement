@@ -12,3 +12,8 @@ SearchCar::~SearchCar()
 {
     delete ui;
 }
+
+string SearchCar::getCarNo()
+{
+    return ui->lineEdit->text().toStdString();
+}

@@ -96,17 +96,18 @@
         </column>
         <column>
          <property name="text">
-          <string>离开时间</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
           <string>停车时长</string>
          </property>
         </column>
         <item>
          <property name="text">
           <string>小型客车</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="text">
+          <string/>
          </property>
          <property name="text">
           <string/>
@@ -124,6 +125,31 @@
           <property name="text">
            <string/>
           </property>
+         </item>
+        </item>
+        <item>
+         <property name="text">
+          <string>小型货车</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <item>
+          <property name="text">
+           <string>click to add</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -131,21 +157,29 @@
         </item>
         <item>
          <property name="text">
-          <string>小型货车</string>
+          <string>中型货车</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="text">
+          <string/>
          </property>
          <item>
           <property name="text">
            <string>click to add</string>
           </property>
-         </item>
-        </item>
-        <item>
-         <property name="text">
-          <string>中型货车</string>
-         </property>
-         <item>
           <property name="text">
-           <string>click to add</string>
+           <string/>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="text">
+           <string/>
           </property>
          </item>
         </item>
@@ -153,9 +187,27 @@
          <property name="text">
           <string>大型货车</string>
          </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
          <item>
           <property name="text">
            <string>click to add</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="text">
+           <string/>
           </property>
          </item>
         </item>
@@ -195,6 +247,17 @@
                   <height>30</height>
                  </size>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>0</string>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
              </layout>
@@ -226,6 +289,17 @@
                   <width>120</width>
                   <height>30</height>
                  </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>0</string>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -259,6 +333,17 @@
                   <height>30</height>
                  </size>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>0</string>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
              </layout>
@@ -290,6 +375,17 @@
                   <width>120</width>
                   <height>30</height>
                  </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>0</string>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>

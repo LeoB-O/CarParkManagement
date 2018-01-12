@@ -33,7 +33,8 @@ SOURCES += \
     parkplace.cpp \
     staff.cpp \
     management.cpp \
-    otherfun.cpp
+    otherfun.cpp \
+    carleave.cpp
 
 HEADERS += \
         carparkmanagement.h \
@@ -44,10 +45,16 @@ HEADERS += \
     parkplace.h \
     staff.h \
     management.h \
-    otherfun.h
+    otherfun.h \
+    carleave.h
 
 FORMS += \
         carparkmanagement.ui \
     carenter.ui \
     employee.ui \
-    searchcar.ui
+    searchcar.ui \
+    carleave.ui
+
+INCLUDEPATH += D:\mysql-5.7.20-win32\include
+
+LIBS += -LD:\User\Documents\QtProjects\CarParkManagement\ -llibmysql

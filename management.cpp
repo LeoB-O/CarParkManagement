@@ -1,22 +1,83 @@
 #include "management.h"
 
+
 Management::Management()
 {
     //TODO parkplace初始化为一定长度（不可变）
     //vehicle长度为可变
     //employee长度可变
     parkplace = vector<ParkPlace>(300);
+    totalCarPlace=200;
+    totalSmallVanPlace=25;
+    totalMidVanPlace=25;
+    totalHugeVanPlace=50;
 }
 
 int Management::carEnter(string no, string color, CarType carType, time_t arriveTime, time_t leaveTime, int parkPos)
 {
     //TODO 写入数据库 判重
-    vehicle.push_back(Vehicle(no, color, carType, arriveTime, 0, parkPos));
+    int pos = findCar(no);
+    if(pos==NOT_FOUND)
+    {
+        vehicle.push_back(Vehicle(no, color, carType, arriveTime, leaveTime, parkPos));
+        parkplace[parkPos].setOccupied(true);
+        if(leaveTime==0)
+        {
+            switch (carType)
+            {
+            case car:
+                totalCarPlace--;
+                break;
+            case smallVan:
+                totalSmallVanPlace--;
+                break;
+            case middleVan:
+                totalMidVanPlace--;
+                break;
+            case HugeVan:
+                    totalHugeVanPlace--;
+                break;
+            default:
+                break;
+            }
+        }
+        
+        updateVehicleDB();
+        return vehicle.size()-1;
+    }
+    else
+    {
+        updateVehicleDB();
+        return ALREADY_EXITST;
+    }
+
 }
 
 int Management::carLeave(string no)
 {
     //TODO 写入数据库
+    int pos = findCar(no);
+    switch (vehicle[pos].getCarType())
+    {
+    case car:
+        totalCarPlace++;
+        break;
+    case smallVan:
+        totalSmallVanPlace++;
+        break;
+    case middleVan:
+        totalMidVanPlace++;
+        break;
+    case HugeVan:
+            totalHugeVanPlace++;
+        break;
+    default:
+        break;
+    }
+    vehicle[pos].getStrLeaveTime();
+    updateVehicleDB();
+    vehicle.erase(vehicle.begin()+pos);
+    return pos;
 }
 
 int Management::findFreePos()
@@ -26,7 +87,7 @@ int Management::findFreePos()
         if(!parkplace[i].isOccupied())
             return i;
     }
-    return -1;
+    return NOT_FOUND;
 }
 
 int Management::findFreePos(int pos)
@@ -36,7 +97,7 @@ int Management::findFreePos(int pos)
         if(!parkplace[i].isOccupied())
             return i;
     }
-    return -1;
+    return NOT_FOUND;
 }
 
 int Management::findCar(string no)
@@ -46,7 +107,7 @@ int Management::findCar(string no)
         if(vehicle[i].getNo()==no)
             return i;
     }
-    return -1;
+    return NOT_FOUND;
 }
 
 int Management::getCarAmount()
@@ -64,16 +125,24 @@ int Management::setCarNo(string no, string toNo)
     //TODO 判重
     int pos = findCar(no);
     if(pos==-1)
+        return NOT_FOUND;
+    pos = findCar(toNo);
+    if(pos==-1)
+    {
+        vehicle[pos].setNo(toNo);
         return pos;
-    vehicle[pos].setNo(toNo);
-    return pos;
+    }
+    else
+    {
+        return ALREADY_EXITST;
+    }
 }
 
 int Management::setCarColor(string no, string color)
 {
     int pos = findCar(no);
     if(pos==-1)
-        return pos;
+        return NOT_FOUND;
     vehicle[pos].setColor(color);
     return pos;
 }
@@ -82,7 +151,7 @@ int Management::setCarType(string no, CarType carType)
 {
     int pos = findCar(no);
     if(pos==-1)
-        return pos;
+        return NOT_FOUND;
     vehicle[pos].setCarType(carType);
     return pos;
 }
@@ -91,7 +160,7 @@ int Management::setArriveTime(string no, time_t arriveTime)
 {
     int pos = findCar(no);
     if(pos==-1)
-        return pos;
+        return NOT_FOUND;
     vehicle[pos].setArriveTime(arriveTime);
     return pos;
 }
@@ -100,9 +169,29 @@ int Management::setLeaveTime(string no, time_t leaveTime)
 {
     int pos = findCar(no);
     if(pos==-1)
-        return pos;
+        return NOT_FOUND;
     vehicle[pos].setLeaveTime(leaveTime);
     return pos;
+}
+
+int Management::getCarParkPlace()
+{
+    return this->totalCarPlace;
+}
+
+int Management::getSmallVanParkPlace()
+{
+    return this->totalSmallVanPlace;
+}
+
+int Management::getMidVanParkPlace()
+{
+    return this->totalMidVanPlace;
+}
+
+int Management::getHugeVanParkPlace()
+{
+    return this->totalHugeVanPlace;
 }
 
 int Management::setParkPos(string no, int parkPos)
@@ -185,9 +274,65 @@ int Management::setStaffType(int no, StaffType staffType)
     return pos;
 }
 
+bool Management::loadVehicleDB()
+{
+    MYSQL sqlCon;
+    string sqlQuery;
+    string carNo, color, carType;
+    long int arriveTime, leaveTime, parkPos;
+    char buffer[80];
+    mysql_init(&sqlCon);
+    mysql_real_connect(&sqlCon, "120.24.228.41", "root", "BslLbbMjl5482()$", "carpark", 3306, NULL, 0);
+    mysql_options(&sqlCon, MYSQL_SET_CHARSET_NAME, "utf-8");
+    sqlQuery="SELECT * FROM `vehicle`;";
+    mysql_real_query(&sqlCon, sqlQuery.c_str(), sqlQuery.length());
+    MYSQL_RES* result = mysql_store_result(&sqlCon);
+    MYSQL_ROW row;
+    unsigned int num_fields;
+    num_fields = mysql_num_fields(result);
+    while(row = mysql_fetch_row(result))
+    {
+        carNo=row[0];
+        color=row[1];
+        carType=row[2];
+        arriveTime=atoi(row[3]);
+        leaveTime=atoi(row[4]);
+        parkPos=atoi(row[5]);
+        carEnter(carNo, color, (CarType)atoi(carType.c_str()), (time_t)arriveTime, (time_t)leaveTime, parkPos);
+    }
+    mysql_close(&sqlCon);
+    return true;
+}
+
 bool Management::updateVehicleDB()
 {
-
+    MYSQL sqlCon;
+    string sqlQuery;
+    char buffer[80];
+    mysql_init(&sqlCon);
+    mysql_real_connect(&sqlCon, "120.24.228.41", "root", "BslLbbMjl5482()$", "carpark", 3306, NULL, 0);
+    sqlQuery="DELETE FROM `vehicle`;";
+    mysql_real_query(&sqlCon, sqlQuery.c_str(),sqlQuery.length());
+    for(int i=0;i<vehicle.size();i++)
+    {
+        sqlQuery.clear();
+        sqlQuery.append("INSERT INTO `carpark`.`vehicle` (`number`, `color`, `type`, `arriveTime`, `leaveTime`, `parkPos`) VALUES ('");
+        sqlQuery.append(vehicle[i].getNo());
+        sqlQuery.append("', '");
+        sqlQuery.append(vehicle[i].getColor());
+        sqlQuery.append("', '");
+        sqlQuery.append(itoa(vehicle[i].getCarType(),buffer,10));
+        sqlQuery.append("', '");
+        sqlQuery.append(itoa((long)vehicle[i].getArriveTime(),buffer,10));
+        sqlQuery.append("', '");
+        sqlQuery.append(itoa((long)vehicle[i].getLeaveTime(),buffer,10));
+        sqlQuery.append("', '");
+        sqlQuery.append(itoa(vehicle[i].getParkPos(),buffer,10));
+        sqlQuery.append("');");
+        mysql_real_query(&sqlCon, sqlQuery.c_str(), sqlQuery.length());
+    }
+    mysql_close(&sqlCon);
+    return true;
 }
 
 bool Management::updateVehicleDB(Vehicle vehicle)

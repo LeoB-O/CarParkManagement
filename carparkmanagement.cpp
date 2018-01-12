@@ -16,13 +16,34 @@ CarParkManagement::~CarParkManagement()
 
 void CarParkManagement::on_carEnter_clicked()
 {
-    //TODO 更行数据库
+    bool inputIsRight=false;
     this->carenter = new CarEnter;
     this->carenter->exec();
     if(this->carenter->result()!=this->carenter->Accepted)
         return;
-    management.carEnter(carenter->getCarNo(),carenter->getCarColor(),carenter->getCarType(),getCurrentTime(),0,management.findFreePos());
+    if(carenter->getCarNo()!="")
+        inputIsRight=true;
+    while(!inputIsRight)
+    {
+        QMessageBox alertBox;
+        alertBox.setText("输入有误！请重新输入！");
+        alertBox.exec();
+        this->carenter = new CarEnter;
+        this->carenter->exec();
+        if(this->carenter->result()!=this->carenter->Accepted)
+            return;
+        if(carenter->getCarNo()!="")
+            inputIsRight=true;
+    }
+    int result = management.carEnter(carenter->getCarNo(),carenter->getCarColor(),carenter->getCarType(),getCurrentTime(),0,management.findFreePos());
+    if(result==ALREADY_EXITST)
+    {
+        QMessageBox alreadyExist;
+        alreadyExist.setText("车辆已存在！");
+        alreadyExist.exec();
+    }
     updateVehicleTree();
+    updateParkPlaceNum();
 }
 
 void CarParkManagement::on_employeeManage_clicked()
@@ -33,8 +54,29 @@ void CarParkManagement::on_employeeManage_clicked()
 
 void CarParkManagement::on_retriveCar_clicked()
 {
+    string carNo;
+    int pos=-1;
     this->searchcar = new SearchCar;
     this->searchcar->exec();
+    carNo=this->searchcar->getCarNo();
+    pos=management.findCar(carNo);
+    if(pos==NOT_FOUND)
+    {
+        QMessageBox notFound;
+        notFound.setText("未找到车辆！");
+        notFound.exec();
+        return;
+    }
+    for(int i=0;i<ui->carInfo->topLevelItemCount();i++)
+    {
+        for(int j=0;j<ui->carInfo->topLevelItem(i)->childCount();j++)
+        {
+            if(ui->carInfo->topLevelItem(i)->child(j)->text(0)==QString::fromStdString(carNo))
+            {
+                ui->carInfo->setCurrentItem(ui->carInfo->topLevelItem(i)->child(j));
+            }
+        }
+    }
 }
 
 void CarParkManagement::updateTime()
@@ -58,11 +100,13 @@ void CarParkManagement::updateTime()
      for(int i=0;i<management.getCarAmount();++i)
      {
          tempVehicle=management.getVehicleAtIndex(i);
+         if(tempVehicle.getLeaveTime()!=0)
+             continue;
          carInfoList.clear();
          carInfoList.append(QString::fromStdString(tempVehicle.getNo()));
          carInfoList.append(QString::fromStdString(tempVehicle.getColor()));
          carInfoList.append(QString::fromStdString(tempVehicle.getStrArriveTime()));
-         carInfoList.append(QString::fromStdString(tempVehicle.getStrLeaveTime()));
+         carInfoList.append(QString::fromStdString(tempVehicle.getStrStayTime()));
          switch (tempVehicle.getCarType())
          {
          case car:
@@ -84,23 +128,68 @@ void CarParkManagement::updateTime()
      }
      for(int i=0;i<ui->carInfo->topLevelItemCount();++i)
      {
-         QTreeWidgetItem *temp = new QTreeWidgetItem(QStringList("Double-Click to Add"));
+         QTreeWidgetItem *temp = new QTreeWidgetItem(QStringList("Double-Click to Leave"));
          ui->carInfo->topLevelItem(i)->insertChild(ui->carInfo->topLevelItem(i)->childCount(),temp);
      }
  }
 
+ void CarParkManagement::updateStayTime()
+ {
+     int pos=0;
+     if(management.getCarAmount()<=0)
+         return;
+     Vehicle tempVehicle=management.getVehicleAtIndex(0);
+     for(int i=0;i<ui->carInfo->topLevelItemCount();i++)
+     {
+         for(int j=0;j<ui->carInfo->topLevelItem(i)->childCount()-1;j++)
+         {
+            pos=management.findCar(ui->carInfo->topLevelItem(i)->child(j)->text(0).toStdString());
+            tempVehicle=management.getVehicleAtIndex(pos);
+            ui->carInfo->topLevelItem(i)->child(j)->setText(3, QString::fromStdString(tempVehicle.getStrStayTime()));
+         }
+     }
+ }
+
+ void CarParkManagement::updateParkPlaceNum()
+ {
+     ui->carRest->setText(QString::number(management.getCarParkPlace()));
+     ui->smallVanRest->setText(QString::number(management.getSmallVanParkPlace()));
+     ui->middleVanRest->setText(QString::number(management.getMidVanParkPlace()));
+     ui->hugeVanRest->setText(QString::number(management.getHugeVanParkPlace()));
+ }
+
  void CarParkManagement::init()
  {
+     management.loadVehicleDB();
      myTime = new QTime();
      QTimer *timer = new QTimer(this);
      connect(timer, SIGNAL(timeout()), this, SLOT(updateTime()));
+     connect(timer, SIGNAL(timeout()), this, SLOT(updateStayTime()));
      timer->start(1000);
      updateVehicleTree();
+     updateParkPlaceNum();
  }
 
  time_t CarParkManagement::getCurrentTime()
  {
      time_t curTime;
-
      return time(&curTime);
  }
+
+void CarParkManagement::on_carInfo_itemDoubleClicked(QTreeWidgetItem *item, int column)
+{
+    QString QStrCarNo = item->text(0);
+    string strCarNo = QStrCarNo.toStdString();
+    int pos = management.findCar(strCarNo);
+    if(pos==-1)
+        return;
+    Vehicle tempVehicle = management.getVehicleAtIndex(pos);
+    carLeave = new CarLeave;
+    carLeave->setAll(tempVehicle.getStrArriveTime(), tempVehicle.getStrLeaveTime(), tempVehicle.getStrStayTime(),tempVehicle.getCharge()*tempVehicle.getIntStayHour());
+    carLeave->exec();
+    if(carLeave->result()!=carLeave->Accepted)
+        return;
+    management.carLeave(strCarNo);
+    updateVehicleTree();
+    updateParkPlaceNum();
+}

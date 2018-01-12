@@ -9,6 +9,8 @@ enum CarType{
     car,smallVan,middleVan,HugeVan
 };
 
+CarType fromStrToCarType(string carType);
+
 class Vehicle
 {
 public:
@@ -18,10 +20,14 @@ public:
     string getNo();         //获取车牌
     string getColor();      //获取车辆颜色
     CarType getCarType();   //获取车辆类型
+    string getStrCarType();
     time_t getArriveTime(); //获取到达时间
     string getStrArriveTime();
     time_t getLeaveTime();  //获取离开时间
     string getStrLeaveTime();
+    string getStrStayTime();
+    int getIntStayHour();
+    int getCharge();
     void setParkPos(int parkPos);
     void setNo(string no);  //设置车牌
     void setColor(string color);            //设置颜色

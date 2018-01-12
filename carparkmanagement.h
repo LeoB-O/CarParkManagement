@@ -1,14 +1,19 @@
 #ifndef CARPARKMANAGEMENT_H
 #define CARPARKMANAGEMENT_H
 
+#include <iostream>
 #include <ctime>
 #include <QMainWindow>
 #include <QTime>
 #include <QTimer>
+#include <QTreeWidgetItem>
+#include <QMessageBox>
+#include "otherfun.h"
 #include "carenter.h"
 #include "employee.h"
 #include "searchcar.h"
 #include "management.h"
+#include "carleave.h"
 
 namespace Ui {
 class CarParkManagement;
@@ -28,11 +33,15 @@ private slots:
     void on_retriveCar_clicked();
     void updateTime();
     void updateVehicleTree();
+    void updateStayTime();
+    void updateParkPlaceNum();
+    void on_carInfo_itemDoubleClicked(QTreeWidgetItem *item, int column);
 
 private:
     Ui::CarParkManagement *ui;
     QTime *myTime;
     CarEnter *carenter;
+    CarLeave *carLeave;
     Employee *employee;
     SearchCar *searchcar;
     Management management;

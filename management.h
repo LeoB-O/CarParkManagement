@@ -2,11 +2,17 @@
 #define MANAGEMENT_H
 
 #include <vector>
+#include <QString>
+#include "winsock.h"
+#include "mysql.h"
 #include "vehicle.h"
 #include "parkplace.h"
 #include "staff.h"
 
 using namespace std;
+
+const int NOT_FOUND=-1;
+const int ALREADY_EXITST=-2;
 
 class Management
 {
@@ -24,6 +30,10 @@ public:
     int setCarType(string no, CarType carType); //修改车辆类型
     int setArriveTime(string no, time_t arriveTime);//修改到达时间
     int setLeaveTime(string no, time_t leaveTime);  //设置离开时间
+    int getCarParkPlace();
+    int getSmallVanParkPlace();
+    int getMidVanParkPlace();
+    int getHugeVanParkPlace();
     int setParkPos(string no, int parkPos);         //设置停车位置
     void setParkPlaceType(int no, CarType parkPlaceType);   //设置停车位类型
     int findStaff(int no);                          //查找员工
@@ -33,6 +43,7 @@ public:
     int setStaffSalary(int no, int salary);         //设置员工薪水
     int setStaffVacation(int no, int vacation);     //设置员工休假情况
     int setStaffType(int no, StaffType staffType);  //设置员工类型
+    bool loadVehicleDB();
     bool updateVehicleDB();                         //更新车辆数据库，将当前内存中的车辆覆盖数据库
     bool updateVehicleDB(Vehicle vehicle);          //更新数据库，向数据库添加vehicle信息
     bool updateVehicleDB(string no, string color, CarType carType, time_t arriveTime, time_t leaveTime, int parkPos);//使用参数中的信息更新数据库

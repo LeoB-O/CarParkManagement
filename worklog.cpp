@@ -2,9 +2,9 @@
 #include "ui_worklog.h"
 //#include "otherdefinition.h"
 
-//const char* HOST_NAME = "localhost";
+//const char* HOST_NAME = "localhost";"120.24.228.41
 //const char* USER_NAME = "root";
-//const char* PASSWORD = "";
+//const char* PASSWORD = "";BslLbbMjl5482()$
 
 WorkLog::WorkLog(QWidget *parent) :
     QWidget(parent),

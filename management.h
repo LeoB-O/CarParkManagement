@@ -61,6 +61,7 @@ public:
     bool updateStaffDB(Staff staff);                //使用staff更新员工数据库
     bool updateStaffDB(int no, string name, int age, int salary, int vacation, StaffType staffType);    //使用参数中的信息更新员工数据库
     bool updateParkPlaceDB();                       //使用内存中的停车位信息覆盖数据库
+    bool updateWorkLog(string userName);
 private:
     vector<Vehicle> vehicle;
     vector<Staff> staff;

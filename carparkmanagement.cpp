@@ -170,7 +170,6 @@ void CarParkManagement::updateTime()
      isValidUser=false;
      this->login = new Login;
      login->exec();
-     management.loadVehicleDB();
      management.loadStaffDB();
      if(management.setCurrentUser(atoi(login->getUserName().c_str()))==-1)
      {
@@ -179,6 +178,8 @@ void CarParkManagement::updateTime()
          alertMess.exec();
          return;
      }
+     management.loadVehicleDB();
+     management.updateWorkLog(login->getUserName());
      isValidUser=true;
      myTime = new QTime();
      QTimer *timer = new QTimer(this);

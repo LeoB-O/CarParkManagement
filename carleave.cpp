@@ -6,6 +6,8 @@ CarLeave::CarLeave(QWidget *parent) :
     ui(new Ui::CarLeave)
 {
     ui->setupUi(this);
+    setWindowIcon(QIcon(":/icon/icon1/park.jpg"));
+    setWindowTitle("车辆离场");
 }
 
 CarLeave::~CarLeave()

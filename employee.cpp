@@ -8,7 +8,8 @@ Employee::Employee(QWidget *parent) :
     ui(new Ui::Employee)
 {
     ui->setupUi(this);
-
+    setWindowIcon(QIcon(":/icon/icon1/park.jpg"));
+    setWindowTitle("员工管理");
 }
 
 Employee::Employee(Management *management, QWidget *parent) :
@@ -17,6 +18,8 @@ Employee::Employee(Management *management, QWidget *parent) :
 {
     ui->setupUi(this);
     this->management=management;
+    setWindowIcon(QIcon(":/icon/icon1/park.jpg"));
+    setWindowTitle("员工管理");
     updateStaffINFO();
 }
 

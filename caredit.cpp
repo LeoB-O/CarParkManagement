@@ -7,6 +7,8 @@ CarEdit::CarEdit(QWidget *parent) :
 {
     ui->setupUi(this);
     this->edited=false;
+    setWindowIcon(QIcon(":/icon/icon1/park.jpg"));
+    setWindowTitle("编辑车辆");
 }
 
 CarEdit::~CarEdit()

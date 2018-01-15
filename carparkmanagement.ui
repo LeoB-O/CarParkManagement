@@ -85,6 +85,15 @@
         <property name="selectionBehavior">
          <enum>QAbstractItemView::SelectRows</enum>
         </property>
+        <property name="sortingEnabled">
+         <bool>false</bool>
+        </property>
+        <property name="expandsOnDoubleClick">
+         <bool>true</bool>
+        </property>
+        <attribute name="headerShowSortIndicator" stdset="0">
+         <bool>false</bool>
+        </attribute>
         <column>
          <property name="text">
           <string>车牌号</string>
@@ -105,34 +114,6 @@
           <string>停车时长</string>
          </property>
         </column>
-        <item>
-         <property name="text">
-          <string>小型客车</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <item>
-          <property name="text">
-           <string>click to add</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </item>
-        </item>
         <item>
          <property name="text">
           <string>小型货车</string>
@@ -163,7 +144,7 @@
         </item>
         <item>
          <property name="text">
-          <string>中型货车</string>
+          <string>小型客车</string>
          </property>
          <property name="text">
           <string/>
@@ -192,6 +173,34 @@
         <item>
          <property name="text">
           <string>大型货车</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <item>
+          <property name="text">
+           <string>click to add</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+        </item>
+        <item>
+         <property name="text">
+          <string>中型货车</string>
          </property>
          <property name="text">
           <string/>

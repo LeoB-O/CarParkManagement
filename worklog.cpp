@@ -11,6 +11,8 @@ WorkLog::WorkLog(QWidget *parent) :
     ui(new Ui::WorkLog)
 {
     ui->setupUi(this);
+    setWindowIcon(QIcon(":/icon/icon1/park.jpg"));
+    setWindowTitle("打卡记录");
     MYSQL sqlCon;
     mysql_init(&sqlCon);
     mysql_real_connect(&sqlCon, "120.24.228.41", "root", "BslLbbMjl5482()$", "carpark", 3306, NULL, 0);

@@ -6,6 +6,8 @@ CarParkManagement::CarParkManagement(QWidget *parent) :
     ui(new Ui::CarParkManagement)
 {
     ui->setupUi(this);
+    setWindowIcon(QIcon(":/icon/icon1/park.jpg"));
+    setWindowTitle("停车场管理系统");
     init();
 }
 
@@ -180,6 +182,8 @@ void CarParkManagement::updateTime()
      this->login = new Login;
      login->exec();
      management.loadStaffDB();
+     if(login->result()!=login->Accepted)
+         return;
      if(management.findStaff(atoi(login->getUserName().c_str()))==NOT_FOUND)
      {
          QMessageBox alertMess;

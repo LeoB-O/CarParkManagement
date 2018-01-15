@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <string>
+#include <windows.h>
 using namespace std;
 
 namespace Ui {
@@ -17,6 +18,9 @@ public:
     explicit Login(QWidget *parent = 0);
     ~Login();
     string getUserName();
+
+private slots:
+    void on_lineEdit_2_textEdited(const QString &arg1);
 
 private:
     Ui::Login *ui;

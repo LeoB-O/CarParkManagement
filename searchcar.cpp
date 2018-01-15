@@ -6,6 +6,8 @@ SearchCar::SearchCar(QWidget *parent) :
     ui(new Ui::SearchCar)
 {
     ui->setupUi(this);
+    setWindowIcon(QIcon(":/icon/icon1/park.jpg"));
+    setWindowTitle("车辆查询");
 }
 
 SearchCar::~SearchCar()

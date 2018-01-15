@@ -44,7 +44,6 @@ int Management::carEnter(string no, string color, CarType carType, time_t arrive
                 break;
             }
         }
-        updateVehicleDB();
         return vehicle.size()-1;
     }
     else
@@ -76,8 +75,6 @@ int Management::carLeave(string no)
         break;
     }
     vehicle[pos].getStrLeaveTime();
-    updateVehicleDB();
-    vehicle.erase(vehicle.begin()+pos);
     return pos;
 }
 
@@ -499,16 +496,16 @@ bool Management::updateWorkLog(string userName)
     mysql_init(&sqlCon);
     mysql_real_connect(&sqlCon, HOST_NAME, USER_NAME, PASSWORD, "carpark", 3306, NULL, 0);
     //INSERT INTO `carpark`.`worklog` (`id`, `date`, `staffname`) VALUES ('2', '2018.1.1', 'leo');
-    sqlQuery="DELETE FROM `worklog` WHERE `id`='";
-    sqlQuery.append(userName);
-    sqlQuery.append("';");
-    mysql_real_query(&sqlCon, sqlQuery.c_str(), sqlQuery.length());
+//    sqlQuery="DELETE FROM `worklog` WHERE `id`='";
+//    sqlQuery.append(userName);
+//    sqlQuery.append("';");
+//    mysql_real_query(&sqlCon, sqlQuery.c_str(), sqlQuery.length());
     int pos=findStaff(atoi(userName.c_str()));
     sqlQuery.clear();
     sqlQuery.append("INSERT INTO `carpark`.`worklog` (`id`, `date`, `staffname`) VALUES ('");
     sqlQuery.append(itoa(staff[pos].getNo(),buffer,10));
     sqlQuery.append("', '");
-    sqlQuery.append(QDate::currentDate().toString().toStdString());
+    sqlQuery.append(QDateTime::currentDateTime().toString().toStdString());
     sqlQuery.append("', '");
     sqlQuery.append(staff[pos].getName());
     sqlQuery.append("');");

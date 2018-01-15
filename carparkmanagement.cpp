@@ -40,6 +40,14 @@ void CarParkManagement::on_carEnter_clicked()
         if(carenter->getCarNo()!="")
             inputIsRight=true;
     }
+    int carTp=carenter->getCarType();
+    if(carTp==0&&management.getCarParkPlace()<=0||carTp==1&&management.getSmallVanParkPlace()<=0||carTp==2&&management.getMidVanParkPlace()<=0||carTp==3&&management.getHugeVanParkPlace()<=0)
+    {
+        QMessageBox alertMess;
+        alertMess.setText("车位已满！");
+        alertMess.exec();
+        return;
+    }
     int result = management.carEnter(carenter->getCarNo(),carenter->getCarColor(),carenter->getCarType(),getCurrentTime(),0,management.findFreePos());
     if(result==ALREADY_EXITST)
     {
@@ -49,6 +57,7 @@ void CarParkManagement::on_carEnter_clicked()
     }
     updateVehicleTree();
     updateParkPlaceNum();
+    management.updateVehicleDB();
 }
 
 void CarParkManagement::on_employeeManage_clicked()
@@ -171,7 +180,7 @@ void CarParkManagement::updateTime()
      this->login = new Login;
      login->exec();
      management.loadStaffDB();
-     if(management.setCurrentUser(atoi(login->getUserName().c_str()))==-1)
+     if(management.findStaff(atoi(login->getUserName().c_str()))==NOT_FOUND)
      {
          QMessageBox alertMess;
          alertMess.setText("用户不存在！");
@@ -201,7 +210,7 @@ void CarParkManagement::on_carInfo_itemDoubleClicked(QTreeWidgetItem *item, int 
     QString QStrCarNo = item->text(0);
     string strCarNo = QStrCarNo.toStdString();
     int pos = management.findCar(strCarNo);
-    if(pos==-1)
+    if(pos==NOT_FOUND)
         return;
     Vehicle tempVehicle = management.getVehicleAtIndex(pos);
     carLeave = new CarLeave;
@@ -212,6 +221,7 @@ void CarParkManagement::on_carInfo_itemDoubleClicked(QTreeWidgetItem *item, int 
     management.carLeave(strCarNo);
     updateVehicleTree();
     updateParkPlaceNum();
+    management.updateVehicleDB();
 }
 
 void CarParkManagement::on_pushButton_clicked()
@@ -235,9 +245,16 @@ void CarParkManagement::on_pushButton_clicked()
         alertMess.exec();
         return;
     }
+    if(caredit->getArriveTime()>QDateTime::currentSecsSinceEpoch())
+    {
+        QMessageBox alertMess;
+        alertMess.setText("时间设置错误！");
+        alertMess.exec();
+        return;
+    }
     management.setCarNo(strCarNo, caredit->getCarNo());
     management.setCarColor(strCarNo, caredit->getCarColor());
     management.setArriveTime(strCarNo, caredit->getArriveTime());
-    management.updateVehicleDB();
     updateVehicleTree();
+    management.updateVehicleDB();
 }

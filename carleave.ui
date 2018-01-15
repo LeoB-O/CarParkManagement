@@ -26,7 +26,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="enterTime"/>
+        <widget class="QLineEdit" name="enterTime">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -40,7 +44,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="leaveTime"/>
+        <widget class="QLineEdit" name="leaveTime">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -54,7 +62,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="stayTime"/>
+        <widget class="QLineEdit" name="stayTime">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -68,7 +80,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="fee"/>
+        <widget class="QLineEdit" name="fee">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>

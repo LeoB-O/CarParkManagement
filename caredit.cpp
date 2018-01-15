@@ -22,6 +22,7 @@ void CarEdit::setAll(string carNo, string carColor, long long carEnterTime)
     qint64 qintEnterTime = carEnterTime;
     enterTime.setSecsSinceEpoch(qintEnterTime);
     ui->dateTimeEdit->setDateTime(enterTime);
+    this->edited=false;
 }
 
 bool CarEdit::nameEdited()

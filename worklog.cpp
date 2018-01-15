@@ -2,9 +2,9 @@
 #include "ui_worklog.h"
 //#include "otherdefinition.h"
 
-//const char* HOST_NAME = "localhost";
+//const char* HOST_NAME = "localhost";"120.24.228.41
 //const char* USER_NAME = "root";
-//const char* PASSWORD = "";
+//const char* PASSWORD = "";BslLbbMjl5482()$
 
 WorkLog::WorkLog(QWidget *parent) :
     QWidget(parent),
@@ -13,7 +13,7 @@ WorkLog::WorkLog(QWidget *parent) :
     ui->setupUi(this);
     MYSQL sqlCon;
     mysql_init(&sqlCon);
-    mysql_real_connect(&sqlCon, "localhost", "root", "", "carpark", 3306, NULL, 0);
+    mysql_real_connect(&sqlCon, "120.24.228.41", "root", "BslLbbMjl5482()$", "carpark", 3306, NULL, 0);
     string sqlQuery = "SELECT * FROM `worklog`;";
     mysql_real_query(&sqlCon, sqlQuery.c_str(),sqlQuery.length());
     MYSQL_RES* result = mysql_store_result(&sqlCon);

@@ -74,3 +74,5 @@ LIBS += -LD:\User\Documents\QtProjects\CarParkManagement\ -llibmysql
 
 RESOURCES += \
     icon.qrc
+
+RC_FILE = myapp.rc

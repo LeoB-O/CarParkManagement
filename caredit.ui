@@ -58,6 +58,41 @@
        </item>
       </layout>
      </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>车辆类型</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox">
+         <item>
+          <property name="text">
+           <string>小型客车</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>小型货车</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>中型货车</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>大型货车</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </item>
     </layout>
    </item>
    <item>

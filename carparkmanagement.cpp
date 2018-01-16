@@ -108,13 +108,8 @@ void CarParkManagement::updateTime()
  {
      QStringList carInfoList;
      Vehicle tempVehicle;
-     int x = management.getCarAmount();
-     ui->carInfo->topLevelItem(0)->takeChildren();
-     ui->carInfo->topLevelItem(1)->takeChildren();
-     ui->carInfo->topLevelItem(2)->takeChildren();
-     ui->carInfo->topLevelItem(3)->takeChildren();
      for(int i=0;i<ui->carInfo->topLevelItemCount();++i)
-         ui->carInfo->topLevelItem(i)->takeChildren();;
+         ui->carInfo->topLevelItem(i)->takeChildren();
      for(int i=0;i<management.getCarAmount();++i)
      {
          tempVehicle=management.getVehicleAtIndex(i);
@@ -238,7 +233,7 @@ void CarParkManagement::on_pushButton_clicked()
     Vehicle tempVehicle = management.getVehicleAtIndex(pos);
     caredit = new CarEdit;
     time_t temp = tempVehicle.getArriveTime();
-    caredit->setAll(tempVehicle.getNo(),tempVehicle.getColor(),(long long)(tempVehicle.getArriveTime()));
+    caredit->setAll(tempVehicle.getNo(),tempVehicle.getColor(),(long long)(tempVehicle.getArriveTime()), tempVehicle.getCarType());
     caredit->exec();
     if(caredit->result()!=caredit->Accepted)
         return;
@@ -259,6 +254,7 @@ void CarParkManagement::on_pushButton_clicked()
     management.setCarNo(strCarNo, caredit->getCarNo());
     management.setCarColor(strCarNo, caredit->getCarColor());
     management.setArriveTime(strCarNo, caredit->getArriveTime());
+    management.setCarType(strCarNo, caredit->getCarType());
     updateVehicleTree();
     management.updateVehicleDB();
 }

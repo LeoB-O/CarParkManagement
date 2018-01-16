@@ -16,10 +16,11 @@ CarEdit::~CarEdit()
     delete ui;
 }
 
-void CarEdit::setAll(string carNo, string carColor, long long carEnterTime)
+void CarEdit::setAll(string carNo, string carColor, long long carEnterTime, CarType CarType)
 {
     ui->lineEdit->setText(QString::fromStdString(carNo));
     ui->lineEdit_2->setText(QString::fromStdString(carColor));
+    ui->comboBox->setCurrentIndex((int)CarType);
     QDateTime enterTime;
     qint64 qintEnterTime = carEnterTime;
     enterTime.setSecsSinceEpoch(qintEnterTime);
@@ -50,4 +51,9 @@ time_t CarEdit::getArriveTime()
 void CarEdit::on_lineEdit_textChanged(const QString &arg1)
 {
     this->edited=true;
+}
+
+CarType CarEdit::getCarType()
+{
+    return (CarType)(ui->comboBox->currentIndex());
 }

@@ -19,7 +19,6 @@ Management::Management()
 
 int Management::carEnter(string no, string color, CarType carType, time_t arriveTime, time_t leaveTime, int parkPos)
 {
-    //TODO 写入数据库 判重
     int pos = findCar(no);
     if(pos==NOT_FOUND)
     {
@@ -45,12 +44,11 @@ int Management::carEnter(string no, string color, CarType carType, time_t arrive
                 break;
             }
         }
-        updateVehicleDB();
         return vehicle.size()-1;
     }
     else
     {
-        updateVehicleDB();
+        //updateVehicleDB();
         return ALREADY_EXITST;
     }
 
@@ -58,7 +56,6 @@ int Management::carEnter(string no, string color, CarType carType, time_t arrive
 
 int Management::carLeave(string no)
 {
-    //TODO 写入数据库
     int pos = findCar(no);
     switch (vehicle[pos].getCarType())
     {
@@ -78,8 +75,6 @@ int Management::carLeave(string no)
         break;
     }
     vehicle[pos].getStrLeaveTime();
-    updateVehicleDB();
-    vehicle.erase(vehicle.begin()+pos);
     return pos;
 }
 
@@ -491,4 +486,30 @@ bool Management::updateStaffDB(int no, string name, int age, int salary, int vac
 bool Management::updateParkPlaceDB()
 {
 
+}
+
+bool Management::updateWorkLog(string userName)
+{
+    MYSQL sqlCon;
+    string sqlQuery;
+    char buffer[80];
+    mysql_init(&sqlCon);
+    mysql_real_connect(&sqlCon, HOST_NAME, USER_NAME, PASSWORD, "carpark", 3306, NULL, 0);
+    //INSERT INTO `carpark`.`worklog` (`id`, `date`, `staffname`) VALUES ('2', '2018.1.1', 'leo');
+//    sqlQuery="DELETE FROM `worklog` WHERE `id`='";
+//    sqlQuery.append(userName);
+//    sqlQuery.append("';");
+//    mysql_real_query(&sqlCon, sqlQuery.c_str(), sqlQuery.length());
+    int pos=findStaff(atoi(userName.c_str()));
+    sqlQuery.clear();
+    sqlQuery.append("INSERT INTO `carpark`.`worklog` (`id`, `date`, `staffname`) VALUES ('");
+    sqlQuery.append(itoa(staff[pos].getNo(),buffer,10));
+    sqlQuery.append("', '");
+    sqlQuery.append(QDateTime::currentDateTime().toString().toStdString());
+    sqlQuery.append("', '");
+    sqlQuery.append(staff[pos].getName());
+    sqlQuery.append("');");
+    mysql_real_query(&sqlCon, sqlQuery.c_str(), sqlQuery.length());
+    mysql_close(&sqlCon);
+    return true;
 }

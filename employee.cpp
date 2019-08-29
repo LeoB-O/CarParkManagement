@@ -8,7 +8,8 @@ Employee::Employee(QWidget *parent) :
     ui(new Ui::Employee)
 {
     ui->setupUi(this);
-
+    setWindowIcon(QIcon(":/icon/icon1/park.jpg"));
+    setWindowTitle("员工管理");
 }
 
 Employee::Employee(Management *management, QWidget *parent) :
@@ -17,6 +18,8 @@ Employee::Employee(Management *management, QWidget *parent) :
 {
     ui->setupUi(this);
     this->management=management;
+    setWindowIcon(QIcon(":/icon/icon1/park.jpg"));
+    setWindowTitle("员工管理");
     updateStaffINFO();
 }
 
@@ -29,6 +32,7 @@ void Employee::setManagement(Management *management)
 {
     this->management=management;
 }
+
 void Employee::on_addStaff_clicked()
 {
     this->addStaff=new AddStaff;
@@ -39,6 +43,14 @@ void Employee::on_addStaff_clicked()
     {
         QMessageBox alertMess;
         alertMess.setText("输入有误！");
+        return;
+    }
+    int pos = management->findStaff(atoi(addStaff->getStaffNo().c_str()));
+    if(pos!=NOT_FOUND)
+    {
+        QMessageBox alertMess;
+        alertMess.setText("用户已存在！");
+        alertMess.exec();
         return;
     }
     management->addStaff(addStaff->getStaffNo(), addStaff->getStaffName(), addStaff->getStaffAge());

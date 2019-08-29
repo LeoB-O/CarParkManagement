@@ -6,6 +6,8 @@ CarParkManagement::CarParkManagement(QWidget *parent) :
     ui(new Ui::CarParkManagement)
 {
     ui->setupUi(this);
+    setWindowIcon(QIcon(":/icon/icon1/park.jpg"));
+    setWindowTitle("停车场管理系统");
     init();
 }
 
@@ -40,6 +42,14 @@ void CarParkManagement::on_carEnter_clicked()
         if(carenter->getCarNo()!="")
             inputIsRight=true;
     }
+    int carTp=carenter->getCarType();
+    if(carTp==0&&management.getCarParkPlace()<=0||carTp==1&&management.getSmallVanParkPlace()<=0||carTp==2&&management.getMidVanParkPlace()<=0||carTp==3&&management.getHugeVanParkPlace()<=0)
+    {
+        QMessageBox alertMess;
+        alertMess.setText("车位已满！");
+        alertMess.exec();
+        return;
+    }
     int result = management.carEnter(carenter->getCarNo(),carenter->getCarColor(),carenter->getCarType(),getCurrentTime(),0,management.findFreePos());
     if(result==ALREADY_EXITST)
     {
@@ -49,6 +59,7 @@ void CarParkManagement::on_carEnter_clicked()
     }
     updateVehicleTree();
     updateParkPlaceNum();
+    management.updateVehicleDB();
 }
 
 void CarParkManagement::on_employeeManage_clicked()
@@ -97,13 +108,8 @@ void CarParkManagement::updateTime()
  {
      QStringList carInfoList;
      Vehicle tempVehicle;
-     int x = management.getCarAmount();
-     ui->carInfo->topLevelItem(0)->takeChildren();
-     ui->carInfo->topLevelItem(1)->takeChildren();
-     ui->carInfo->topLevelItem(2)->takeChildren();
-     ui->carInfo->topLevelItem(3)->takeChildren();
      for(int i=0;i<ui->carInfo->topLevelItemCount();++i)
-         ui->carInfo->topLevelItem(i)->takeChildren();;
+         ui->carInfo->topLevelItem(i)->takeChildren();
      for(int i=0;i<management.getCarAmount();++i)
      {
          tempVehicle=management.getVehicleAtIndex(i);
@@ -170,15 +176,18 @@ void CarParkManagement::updateTime()
      isValidUser=false;
      this->login = new Login;
      login->exec();
-     management.loadVehicleDB();
      management.loadStaffDB();
-     if(management.setCurrentUser(atoi(login->getUserName().c_str()))==-1)
+     if(login->result()!=login->Accepted)
+         return;
+     if(management.findStaff(atoi(login->getUserName().c_str()))==NOT_FOUND)
      {
          QMessageBox alertMess;
          alertMess.setText("用户不存在！");
          alertMess.exec();
          return;
      }
+     management.loadVehicleDB();
+     management.updateWorkLog(login->getUserName());
      isValidUser=true;
      myTime = new QTime();
      QTimer *timer = new QTimer(this);
@@ -200,7 +209,7 @@ void CarParkManagement::on_carInfo_itemDoubleClicked(QTreeWidgetItem *item, int 
     QString QStrCarNo = item->text(0);
     string strCarNo = QStrCarNo.toStdString();
     int pos = management.findCar(strCarNo);
-    if(pos==-1)
+    if(pos==NOT_FOUND)
         return;
     Vehicle tempVehicle = management.getVehicleAtIndex(pos);
     carLeave = new CarLeave;
@@ -211,6 +220,7 @@ void CarParkManagement::on_carInfo_itemDoubleClicked(QTreeWidgetItem *item, int 
     management.carLeave(strCarNo);
     updateVehicleTree();
     updateParkPlaceNum();
+    management.updateVehicleDB();
 }
 
 void CarParkManagement::on_pushButton_clicked()
@@ -223,7 +233,7 @@ void CarParkManagement::on_pushButton_clicked()
     Vehicle tempVehicle = management.getVehicleAtIndex(pos);
     caredit = new CarEdit;
     time_t temp = tempVehicle.getArriveTime();
-    caredit->setAll(tempVehicle.getNo(),tempVehicle.getColor(),(long long)(tempVehicle.getArriveTime()));
+    caredit->setAll(tempVehicle.getNo(),tempVehicle.getColor(),(long long)(tempVehicle.getArriveTime()), tempVehicle.getCarType());
     caredit->exec();
     if(caredit->result()!=caredit->Accepted)
         return;
@@ -234,9 +244,17 @@ void CarParkManagement::on_pushButton_clicked()
         alertMess.exec();
         return;
     }
+    if(caredit->getArriveTime()>QDateTime::currentSecsSinceEpoch())
+    {
+        QMessageBox alertMess;
+        alertMess.setText("时间设置错误！");
+        alertMess.exec();
+        return;
+    }
     management.setCarNo(strCarNo, caredit->getCarNo());
     management.setCarColor(strCarNo, caredit->getCarColor());
     management.setArriveTime(strCarNo, caredit->getArriveTime());
-    management.updateVehicleDB();
+    management.setCarType(strCarNo, caredit->getCarType());
     updateVehicleTree();
+    management.updateVehicleDB();
 }

@@ -71,3 +71,8 @@ FORMS += \
 INCLUDEPATH += D:\mysql-5.7.20-win32\include
 
 LIBS += -LD:\User\Documents\QtProjects\CarParkManagement\ -llibmysql
+
+RESOURCES += \
+    icon.qrc
+
+RC_FILE = myapp.rc

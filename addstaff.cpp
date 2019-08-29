@@ -6,6 +6,8 @@ AddStaff::AddStaff(QWidget *parent) :
     ui(new Ui::AddStaff)
 {
     ui->setupUi(this);
+    setWindowIcon(QIcon(":/icon/icon1/park.jpg"));
+    setWindowTitle("添加员工");
 }
 
 AddStaff::~AddStaff()

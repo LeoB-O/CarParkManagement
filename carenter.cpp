@@ -6,6 +6,8 @@ CarEnter::CarEnter(QWidget *parent) :
     ui(new Ui::CarEnter)
 {
     ui->setupUi(this);
+    setWindowIcon(QIcon(":/icon/icon1/park.jpg"));
+    setWindowTitle("车辆进场");
 }
 
 CarEnter::~CarEnter()

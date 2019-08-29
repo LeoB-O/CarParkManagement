@@ -56,7 +56,7 @@
      <item>
       <widget class="QPushButton" name="worklog">
        <property name="text">
-        <string>当班记录</string>
+        <string>打卡记录</string>
        </property>
       </widget>
      </item>
